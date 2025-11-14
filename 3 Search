@@ -1,0 +1,41 @@
+def linear_search(product_codes, target):
+for i in range(len(product_codes)):
+if product_codes[i] == target:
+return i
+return -1
+def binary_search(product_codes, target):
+product_codes.sort()
+low = 0
+high = len(product_codes) - 1
+while low <= high:
+mid = (low + high) // 2
+if product_codes[mid] == target:
+return mid
+elif product_codes[mid] < target:
+low = mid + 1
+else:
+high = mid - 1
+return -1
+product_list = list(map(int, input("Enter product codes (space-separated): ").split()))
+target_code = int(input("Enter product code to search: "))
+print("\n--- Linear Search ---")
+index_linear = linear_search(product_list, target_code)
+if index_linear != -1:
+print(f"Product code {target_code} found at index {index_linear} (unsorted list)")
+else:
+print(f"Product code {target_code} not found in the list")
+print("\n--- Binary Search ---")
+sorted_list = sorted(product_list)
+index_binary = binary_search(product_list.copy(), target_code)
+if index_binary != -1:
+print(f"Product code {target_code} found at index {index_binary} in sorted list
+{sorted_list}")
+else:
+print(f"Product code {target_code} not found in sorted list {sorted_list}")
+print("\n--- Time & Space Complexity ---")
+print("Linear Search:")
+print(" Time Complexity: Best = O(1), Worst = O(n)")
+print(" Space Complexity: O(1)")
+print("Binary Search:")
+print(" Time Complexity: Best = O(1), Worst = O(log n)")
+print(" Space Complexity: O(1)"
