@@ -2,83 +2,40 @@
 #include <vector>
 using namespace std;
 
-int knapsack(int cap, const vector<int>& wt, const vector<int>& val, int n) {
-    vector<vector<int>> dp(n + 1, vector<int>(cap + 1, 0));
-    for (int i = 1; i <= n; ++i)
-        for (int w = 0; w <= cap; ++w)
-            dp[i][w] = (wt[i - 1] <= w)
-                ? max(dp[i - 1][w], val[i - 1] + dp[i - 1][w - wt[i - 1]])
-                : dp[i - 1][w];
-    int w = cap;
-    cout << "Items included: ";
-    for (int i = n; i > 0; --i)
+int main() {
+    int n, W;
+    cout << "Enter number of items: ";
+    cin >> n;
+    cout << "Enter knapsack capacity: ";
+    cin >> W;
+
+    vector<int> wt(n), val(n);
+    cout << "Enter weight and value of each item:\n";
+    for (int i = 0; i < n; i++)
+        cin >> wt[i] >> val[i];
+
+    vector<vector<int> > dp(n + 1, vector<int>(W + 1, 0));
+
+    for (int i = 1; i <= n; i++) {
+        for (int w = 1; w <= W; w++) {
+            if (wt[i - 1] <= w)
+                dp[i][w] = max(dp[i - 1][w], val[i - 1] + dp[i - 1][w - wt[i - 1]]);
+            else
+                dp[i][w] = dp[i - 1][w];
+        }
+    }
+
+    cout << "\nMaximum value in knapsack = " << dp[n][W] << endl;
+
+    cout << "\nItems included (index starting from 0):\n";
+    int w = W;
+    for (int i = n; i > 0; i--) {
         if (dp[i][w] != dp[i - 1][w]) {
-            cout << i - 1 << " ";
+            cout << "Item " << i - 1 << " (wt=" << wt[i - 1]
+                 << ", val=" << val[i - 1] << ")\n";
             w -= wt[i - 1];
         }
-    cout << endl;
-    return dp[n][cap];
-}
+    }
 
-int main() {
-    vector<int> wt = {2, 3, 4, 5}, val = {3, 4, 5, 6};
-    int cap = 5;
-    cout << "Max value: " << knapsack(cap, wt, val, wt.size()) << endl;
-    return 0;
-}
-#include <iostream>
-#include <vector>
-using namespace std;
-
-int knapsack(int cap, const vector<int>& wt, const vector<int>& val, int n) {
-    vector<vector<int>> dp(n + 1, vector<int>(cap + 1, 0));
-    for (int i = 1; i <= n; ++i)
-        for (int w = 0; w <= cap; ++w)
-            dp[i][w] = (wt[i - 1] <= w)
-                ? max(dp[i - 1][w], val[i - 1] + dp[i - 1][w - wt[i - 1]])
-                : dp[i - 1][w];
-    int w = cap;
-    cout << "Items included: ";
-    for (int i = n; i > 0; --i)
-        if (dp[i][w] != dp[i - 1][w]) {
-            cout << i - 1 << " ";
-            w -= wt[i - 1];
-        }
-    cout << endl;
-    return dp[n][cap];
-}
-
-int main() {
-    vector<int> wt = {2, 3, 4, 5}, val = {3, 4, 5, 6};
-    int cap = 5;
-    cout << "Max value: " << knapsack(cap, wt, val, wt.size()) << endl;
-    return 0;
-}
-#include <iostream>
-#include <vector>
-using namespace std;
-
-int knapsack(int cap, const vector<int>& wt, const vector<int>& val, int n) {
-    vector<vector<int>> dp(n + 1, vector<int>(cap + 1, 0));
-    for (int i = 1; i <= n; ++i)
-        for (int w = 0; w <= cap; ++w)
-            dp[i][w] = (wt[i - 1] <= w)
-                ? max(dp[i - 1][w], val[i - 1] + dp[i - 1][w - wt[i - 1]])
-                : dp[i - 1][w];
-    int w = cap;
-    cout << "Items included: ";
-    for (int i = n; i > 0; --i)
-        if (dp[i][w] != dp[i - 1][w]) {
-            cout << i - 1 << " ";
-            w -= wt[i - 1];
-        }
-    cout << endl;
-    return dp[n][cap];
-}
-
-int main() {
-    vector<int> wt = {2, 3, 4, 5}, val = {3, 4, 5, 6};
-    int cap = 5;
-    cout << "Max value: " << knapsack(cap, wt, val, wt.size()) << endl;
     return 0;
 }
