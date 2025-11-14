@@ -1,86 +1,59 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <climits>
 using namespace std;
 
-const int INF = INT_MAX;
 int N;
+int bestCost = INT_MAX;
+vector<int> bestAssign;
 
-struct Node {
-    vector<bool> assigned;
-    int cost, level, workerID;
-    vector<int> path;
+void branchAndBound(int dev, vector<vector<int>>& cost, vector<int>& currAssign,
+                    vector<bool>& usedProj, int currCost) {
 
-    Node(int n) : assigned(n, false), cost(0), level(0), workerID(-1), path(n, -1) {}
-
-    Node(const Node& parent) : assigned(parent.assigned), cost(parent.cost),
-        level(parent.level), workerID(parent.workerID), path(parent.path) {}
-};
-
-struct Compare {
-    bool operator()(const Node& a, const Node& b) {
-        return a.cost > b.cost;
-    }
-};
-
-int calculateCost(const vector<vector<int>>& costMatrix, const Node& node) {
-    int cost = node.cost;
-    for (int i = node.level; i < N; ++i) {
-        int minCost = INF;
-        for (int j = 0; j < N; ++j)
-            if (!node.assigned[j] && costMatrix[i][j] < minCost)
-                minCost = costMatrix[i][j];
-        cost += minCost;
-    }
-    return cost;
-}
-
-int solveAssignment(const vector<vector<int>>& costMatrix, vector<int>& result) {
-    priority_queue<Node, vector<Node>, Compare> pq;
-    Node root(N);
-    root.cost = calculateCost(costMatrix, root);
-    pq.push(root);
-
-    while (!pq.empty()) {
-        Node minNode = pq.top(); pq.pop();
-
-        int i = minNode.level;
-        if (i == N) {
-            result = minNode.path;
-            return minNode.cost;
+    if (dev == N) {
+        if (currCost < bestCost) {
+            bestCost = currCost;
+            bestAssign = currAssign;
         }
+        return;
+    }
 
-        for (int j = 0; j < N; ++j) {
-            if (!minNode.assigned[j]) {
-                Node child = minNode;
-                child.level = i + 1;
-                child.assigned[j] = true;
-                child.path[i] = j;
-                child.cost = minNode.cost - calculateCost(costMatrix, minNode)
-                             + costMatrix[i][j] + calculateCost(costMatrix, child);
-                pq.push(child);
-            }
+    if (currCost >= bestCost) return;
+
+    for (int proj = 0; proj < N; proj++) {
+        if (!usedProj[proj]) {
+            usedProj[proj] = true;
+            currAssign[dev] = proj;
+
+            branchAndBound(dev + 1, cost, currAssign, usedProj,
+                           currCost + cost[dev][proj]);
+
+            usedProj[proj] = false;
         }
     }
-    return -1;
 }
 
 int main() {
-    N = 4;
-    vector<vector<int>> costMatrix = {
-        {9, 2, 7, 8},
-        {6, 4, 3, 7},
-        {5, 8, 1, 8},
-        {7, 6, 9, 4}
-    };
+    cout << "Enter number of developers/projects: ";
+    cin >> N;
 
-    vector<int> assignment;
-    int minCost = solveAssignment(costMatrix, assignment);
+    vector<vector<int>> cost(N, vector<int>(N));
+    cout << "Enter the " << N << "x" << N << " cost matrix:\n";
 
-    cout << "Minimum Assignment Cost: " << minCost << "\n";
-    for (int i = 0; i < N; ++i)
-        cout << "Developer " << i << " → Project " << assignment[i] << "\n";
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            cin >> cost[i][j];
+
+    vector<int> currAssign(N);
+    vector<bool> usedProj(N, false);
+
+    branchAndBound(0, cost, currAssign, usedProj, 0);
+
+    cout << "\nMinimum Total Assignment Cost = " << bestCost << "\n";
+    cout << "Developer → Project assignment:\n";
+
+    for (int i = 0; i < N; i++)
+        cout << "Developer " << i << " -> Project " << bestAssign[i] << endl;
 
     return 0;
 }
