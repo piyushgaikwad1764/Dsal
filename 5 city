@@ -1,29 +1,68 @@
-import networkx as nx
-import matplotlib.pyplot as plt
-#Example city graph using adjacency List
-city_graph = {
-"A": [("B", 5), ("C", 10)],
-"B": [("A", 5), ("C", 7), ("D", 7)],
-"C": [("A", 10), ("B", 7), ("D", 1)],
-"D": [("B", 7), ("C", 1)]
-}
-#Build NetworkX graph
-G=nx.Graph()
-fornode, neighbors in city_graph.items():
-forneighbor, weight in neighbors:
-G.add_edge(node, neighbor, weight=weight)
-source= "A"
-#Compute shortest paths and distances
-paths = dict(nx.single_source_dijkstra_path(G, source))
-distances = dict(nx.single_source_dijkstra_path_length(G, source))
-#Visualization
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True, node_color='lightblue', edge_color='gray')
-#Highlight shortest paths
-for target, path in paths.items():
-if target != source:
-path_edges = list(zip(path[:-1], path[1:]))
-nx.draw_network_edges(G, pos, edgelist=path_edges, width=2,
-edge_color='red')
-plt.title(f"Shortest Paths from {source}")
-plt.show()
+import networkx as nx, matplotlib.pyplot as plt
+
+class P:
+    def __init__(self,k,d,p,c): self.k,self.d,self.p,self.c=k,d,p,c
+    def __str__(self): return f"{self.k}({self.c}):Rs.{self.p:.2f} - {self.d}"
+
+class N:
+    def __init__(self,p): self.p,self.l,self.r,self.h=p,None,None,1
+
+class AVL:
+    def __init__(self): self.r=None
+    def h(self,n): return n.h if n else 0
+    def b(self,n): return self.h(n.l)-self.h(n.r) if n else 0
+    def rr(self,y):
+        x,y_l=y.l,y.l.r; y.l=y_l; x.r=y
+        y.h=1+max(self.h(y.l),self.h(y.r)); x.h=1+max(self.h(x.l),self.h(x.r))
+        return x
+    def lr(self,x):
+        y,x_r=x.r,x.r.l; x.r=x_r; y.l=x
+        x.h=1+max(self.h(x.l),self.h(x.r)); y.h=1+max(self.h(y.l),self.h(y.r))
+        return y
+    def ins(self,n,p):
+        if not n: return N(p)
+        if p.k<n.p.k: n.l=self.ins(n.l,p)
+        elif p.k>n.p.k: n.r=self.ins(n.r,p)
+        else: n.p.d,n.p.p,n.p.c=p.d,p.p,p.c; return n
+        n.h=1+max(self.h(n.l),self.h(n.r)); b=self.b(n)
+        if b>1 and p.k<n.l.p.k: return self.rr(n)
+        if b<-1 and p.k>n.r.p.k: return self.lr(n)
+        if b>1 and p.k>n.l.p.k: n.l=self.lr(n.l); return self.rr(n)
+        if b<-1 and p.k<n.r.p.k: n.r=self.rr(n.r); return self.lr(n)
+        return n
+    def add(self,p): self.r=self.ins(self.r,p)
+    def inorder(self,n,l):
+        if n: self.inorder(n.l,l); l.append(n.p); self.inorder(n.r,l)
+    def display(self): l=[]; self.inorder(self.r,l); [print(x) for x in l]
+    def search(self,k):
+        c=0; p=[]; cur=self.r
+        while cur:
+            c+=1; p.append(cur.p.k)
+            if k==cur.p.k: return cur.p,c,p
+            cur=cur.l if k<cur.p.k else cur.r
+        return None,c,p
+    def visualize(self,path=None):
+        if not self.r: return
+        G,labels=nx.DiGraph(),{}
+        def add(n):
+            if not n: return
+            labels[n.p.k]=f"{n.p.k}\n${n.p.p:.2f}"
+            if n.l: G.add_edge(n.p.k,n.l.p.k); add(n.l)
+            if n.r: G.add_edge(n.p.k,n.r.p.k); add(n.r)
+        add(self.r)
+        pos=nx.spring_layout(G,seed=42)
+        colors=['orange' if path and n in path else 'skyblue' for n in G.nodes]
+        plt.figure(figsize=(8,6))
+        nx.draw(G,pos,labels=labels,node_color=colors,node_size=1500,with_labels=True,font_weight='bold')
+        plt.show()
+
+avl=AVL()
+for k,d,p,c in [("apple","red apple",100,"fruit"),("banana","ripe banana",59,"fruit"),
+                ("carrot","organic carrot",89,"veg"),("date","sweet date",129,"dry fruit"),
+                ("eggplant","purple eggplant",149,"veg")]:
+    avl.add(P(k,d,p,c))
+
+avl.display()
+prod,comp,path=avl.search("carrot")
+print(f"\nFound: {prod}, comps={comp}, path={path}")
+avl.visualize(path)
