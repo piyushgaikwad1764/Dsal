@@ -1,33 +1,46 @@
-#include<iostream>
+#include <iostream>
 using namespace std;
+
 #define INF 99999
 
 int main() {
-    int v, mat[10][10], d[10][10];
-
+    int n;
     cout << "Enter number of nodes: ";
-    cin >> v;
+    cin >> n;
 
-    cout << "Enter adjacency matrix (use 99999 for no direct edge):\n";
-    for(int i=0;i<v;i++){
-        for(int j=0;j<v;j++){
+    int graph[20][20], dist[20][20];
+
+    cout << "Enter adjacency matrix (use " << INF << " for no direct edge):\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
             cout << "Cost from Entity " << i << " to Entity " << j << ": ";
-            cin >> mat[i][j];
-            d[i][j] = mat[i][j];   
+            cin >> graph[i][j];
+            dist[i][j] = graph[i][j];   
         }
     }
 
     
-    for(int k=0;k<v;k++)
-        for(int i=0;i<v;i++)
-            for(int j=0;j<v;j++)
-                if(d[i][k] + d[k][j] < d[i][j])
-                    d[i][j] = d[i][k] + d[k][j];
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
 
+                if (dist[i][k] < INF && dist[k][j] < INF) {
+                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+                }
+
+            }
+        }
+    }
+
+    
     cout << "\nMinimum Cost Matrix (All-Pairs Shortest Paths):\n";
-    for(int i=0;i<v;i++){
-        for(int j=0;j<v;j++)
-            cout << d[i][j] << " ";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (dist[i][j] == INF)
+                cout << "INF ";
+            else
+                cout << dist[i][j] << " ";
+        }
         cout << endl;
     }
 
