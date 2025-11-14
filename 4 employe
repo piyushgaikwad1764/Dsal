@@ -1,62 +1,63 @@
 class Employee:
-    def __init__(self, emp_id, name, department, salary):
+    def __init__(self, emp_id, name, dept, salary):
         self.emp_id = emp_id
         self.name = name
-        self.department = department
+        self.dept = dept
         self.salary = salary
 
     def __str__(self):
-        return f"{self.emp_id:<10} {self.name:<15} {self.department:<15} rs.{self.salary}"
+        return f"{self.emp_id} - {self.name} - {self.dept} - {self.salary}"
 
-def bubble_sort_by_id(employee_list):
-    n = len(employee_list)
-    for i in range(n):
-        for j in range(0, n - i - 1):
-            if employee_list[j].emp_id > employee_list[j + 1].emp_id:
-                employee_list[j], employee_list[j + 1] = employee_list[j + 1], employee_list[j]
 
-def insertion_sort_by_name(employee_list):
-    for i in range(1, len(employee_list)):
-        key = employee_list[i]
+def bubble_sort(emp_list):
+    n = len(emp_list)
+    for i in range(n - 1):
+        for j in range(n - i - 1):
+            if emp_list[j].emp_id > emp_list[j + 1].emp_id:
+                emp_list[j], emp_list[j + 1] = emp_list[j + 1], emp_list[j]
+
+
+def insertion_sort(emp_list):
+    for i in range(1, len(emp_list)):
+        key = emp_list[i]
         j = i - 1
-        while j >= 0 and employee_list[j].name > key.name:
-            employee_list[j + 1] = employee_list[j]
+        while j >= 0 and emp_list[j].name > key.name:
+            emp_list[j + 1] = emp_list[j]
             j -= 1
-        employee_list[j + 1] = key
+        emp_list[j + 1] = key
 
-def display_employees(employee_list, title):
-    print(f"\n{title}")
-   
-    print(f"{'Emp ID':<10} {'Name':<15} {'Department':<15} Salary")
-    
-    for emp in employee_list:
-        print(emp)
-        
-def print_complexity(algorithm_name, time_complexity, space_complexity):
-    print(f"\n{algorithm_name} Complexity:")
-    print(f"Time Complexity: {time_complexity}")
-    print(f"Space Complexity: {space_complexity}")
 
-   
+employees = []
 
-employees = [
-    Employee(104, "Arjun", "HR", 55000),
-    Employee(101, "Hemant", "Finance", 60000),
-    Employee(110, "Piyush", "IT", 72000),
-    Employee(108, "Devika", "IT", 68000),
-    Employee(102, "Ishita", "Marketing", 58000),
-    Employee(107, "Avani", "HR", 59000),
-    Employee(103, "Sai", "Finance", 61000),
-    Employee(109, "Tanvi", "Marketing", 57000),
-    Employee(105, "Swaraj", "Finance", 63000),
-    Employee(106, "Varun", "IT", 69000)
-]
+n = int(input("Enter number of employees: "))
 
-bubble_sort_by_id(employees)
-display_employees(employees, "Employees Sorted by Employee ID (Bubble Sort)")
-print_complexity("Bubble Sort", "Worst/Average: O(n^2), Best: O(n)", "O(1)")
+for i in range(n):
+    print(f"\nEnter details of employee {i+1}:")
+    emp_id = int(input("Employee ID: "))
+    name = input("Name: ")
+    dept = input("Department: ")
+    salary = float(input("Salary: "))
 
-insertion_sort_by_name(employees)
-display_employees(employees, "Employees Sorted by Name (Insertion Sort)")
-print_complexity("Insertion Sort", "Worst/Average: O(n^2), Best: O(n)", "O(1)")
+    employees.append(Employee(emp_id, name, dept, salary))
 
+
+print("\nOriginal List of Employees:")
+for e in employees:
+    print(e)
+
+
+bubble_sort(employees)
+print("\nSorted by Employee ID (Bubble Sort):")
+for e in employees:
+    print(e)
+
+
+insertion_sort(employees)
+print("\nSorted by Name (Insertion Sort):")
+for e in employees:
+    print(e)
+
+
+print("\nTime & Space Complexity:")
+print("Bubble Sort -> Time: O(n^2), Space: O(1)")
+print("Insertion Sort -> Time: O(n^2) Avg/Worst, O(n) Best, Space: O(1)")
