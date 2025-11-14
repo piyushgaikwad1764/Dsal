@@ -1,75 +1,86 @@
 class BookNode:
-def __init__(self, isbn, title):
-self.isbn = isbn
-self.title = title
-self.nxt = None # next points to next node
-class Inventory:
-def __init__(self):
-self.head = None
-def add_featured_book(self, isbn, title):
-new_book = BookNode(isbn, title)
-new_book.nxt = self.head
-self.head = new_book
-def add_latest_arrival(self, isbn, title):
-new_book = BookNode(isbn, title)
-if self.head is None:
-self.head = new_book
-else:
-temp = self.head
-while temp.next:
-temp = temp.nxt
-temp.nxt = new_book
-print("Book Added")
-def del_book(self, isbn):
-current = self.head
-prev = None
-while current != None:
-if current.isbn == isbn:
-if prev:
-prev.nxt = current.nxt
-else:
-self.head = current.nxt
-print("Book Deleted")
-return
-prev = current
-current = current.nxt
-def count_books(self):
-count = 0
-temp = self.head
-while temp != None:
-count += 1
-temp = temp.nxt
-print("Total Books :", count)
-def display(self):
-if self.head == None:
-print("No Books Found")
-return
-temp = self.head
-while temp != None:
-print(f"{temp.isbn} | {temp.title}")
-temp = temp.nxt
-def main():
-inv = Inventory()
-while True:
-print("1.Add Featured Books\n2.Add Latest
-Book\n3.Delete Books\n4.Count Books\n5.Show Display")
-choice = int(input("Enter Your Choice : "))
-if choice == 1:
-isbn = input("Enter ISBN Number : ")
-title = input("Enter Title of Book : ")
-inv.add_featured_book(isbn, title)
-elif choice == 2:
-isbn = input("Enter ISBN Number : ")
-title = input("Enter Title of Book : ")
-inv.add_latest_arrival(isbn, title)
-elif choice == 3:
-isbn = input("Enter ISBN Number : ")
-inv.del_book(isbn)
-elif choice == 4:
-inv.count_books()
-elif choice == 5:
-inv.display()
-else:
-break
+    def __init__(self,isbn,title):
+        self.isbn = isbn
+        self.title = title
+        self.next = None
+        
+class Bookinventory:
+    def __init__(self):
+        self.head = None 
+        
+    def add_featured_book(self,isbn,title):
+        new_book = BookNode(isbn, title)
+        new_book.next = self.head
+        self.head = new_book
+        print(f"featured book'{title}' added.")
+        
+    def add_latest_arrival(self,isbn,title):
+        new_book = BookNode(isbn,title)
+        if not self.head:
+            self.head = new_book
+        else:
+            current = self.head
+            while current.next:
+                current = current.next
+            current.next=new_book
+        print(f"Latest arrival '{title}' added.")
+        
+    def delete_book_by_isbn(self,isbn):
+        current = self.head
+        prev = None
+        while current:
+            if current.isbn == isbn:
+                if prev:
+                    prev.next = current.next
+                else:
+                    self.head = current.next
+                print(f"book with ISBN {isbn} DELETED.")
+                return
+            prev = current
+            current = current.next
+        print(f"book with ISBN {isbn} NOT FOUND")
+        
+    def count_books(self):
+        count = 0
+        current = self.head
+        while current:
+            count += 1
+            current = current.next
+        return count
+        
+    def display_books(self):
+        if not self.head:
+            print("Inventory is empty.")
+            return
+        print("\nBook inventory:")
+        current = self.head
+        index = 1
+        while current:
+            tag = ""
+            if current == self.head:
+                tag = "(featured book)"
+            elif current.next is None:
+                tag = "(latest Arrival)"
+            print(f"{index}. ISBN:{current.isbn}, title:'{current.title}' {tag}")
+            current = current.next
+            index += 1
+            
 if __name__ == "__main__":
-main()
+    inventory = Bookinventory()
+    
+inventory.add_featured_book("111-000", "the great me")
+inventory.add_latest_arrival("111-111", "the great us")
+inventory.add_latest_arrival("111-222", "kill it")
+
+inventory.display_books()
+
+inventory.delete_book_by_isbn("111-111")
+
+inventory.display_books()
+print(f"\nTotal number of books: {inventory.count_books()}")
+
+
+        
+            
+        
+        
