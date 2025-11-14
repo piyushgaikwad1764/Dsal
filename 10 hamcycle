@@ -1,59 +1,56 @@
 #include <iostream>
 #include <vector>
-
 using namespace std;
 
-bool isSafe(int v, const vector<vector<int>>& graph, vector<int>& path, int pos) {
-    if (graph[path[pos - 1]][v] == 0)
-        return false;
-    for (int i = 0; i < pos; i++)
-        if (path[i] == v)
-            return false;
+bool isSafe(int v, const vector<vector<int> >& graph, const vector<int>& path, int pos) {
+    if (graph[path[pos-1]][v] == 0) return false;
+    for (int i = 0; i < pos; ++i)
+        if (path[i] == v) return false;
     return true;
 }
 
-bool hamiltonianCycleUtil(const vector<vector<int>>& graph, vector<int>& path, int pos) {
-    if (pos == graph.size()) {
-        if (graph[path[pos - 1]][path[0]] == 1)
-            return true;
-        else
-            return false;
+bool hamCycleUtil(const vector<vector<int> >& graph, vector<int>& path, int pos) {
+    int n = graph.size();
+    if (pos == n) {
+        return graph[path[pos-1]][path[0]] == 1;
     }
-    for (int v = 1; v < graph.size(); v++) {
+    for (int v = 1; v < n; ++v) {
         if (isSafe(v, graph, path, pos)) {
             path[pos] = v;
-            if (hamiltonianCycleUtil(graph, path, pos + 1))
-                return true;
+            if (hamCycleUtil(graph, path, pos + 1)) return true;
             path[pos] = -1;
         }
     }
     return false;
 }
 
-bool hamiltonianCycle(const vector<vector<int>>& graph) {
-    int V = graph.size();
-    vector<int> path(V, -1);
+bool hamCycle(const vector<vector<int> >& graph, vector<int>& path) {
+    int n = graph.size();
+    path.assign(n, -1);
     path[0] = 0;
-    if (hamiltonianCycleUtil(graph, path, 1)) {
-        cout << "Hamiltonian Cycle found: ";
-        for (int i = 0; i < V; i++) {
-            cout << path[i] << " ";
-        }
-        cout << path[0] << endl;
-        return true;
-    }
-    cout << "No Hamiltonian Cycle found" << endl;
-    return false;
+    return hamCycleUtil(graph, path, 1);
 }
 
 int main() {
-    vector<vector<int>> graph = {
-        {0, 1, 0, 1, 0},
-        {1, 0, 1, 1, 1},
-        {0, 1, 0, 0, 1},
-        {1, 1, 0, 0, 1},
-        {0, 1, 1, 1, 0}
-    };
-    hamiltonianCycle(graph);
+    int n;
+    cout << "Enter number of cities (nodes): ";
+    if (!(cin >> n) || n <= 0) return 0;
+
+    vector<vector<int> > graph(n, vector<int>(n));
+    cout << "Enter adjacency matrix (0 or 1) row by row:\n";
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < n; ++j)
+            cin >> graph[i][j];
+
+    vector<int> path;
+    if (hamCycle(graph, path)) {
+        cout << "Hamiltonian Cycle found:\n";
+        for (int i = 0; i < n; ++i)
+            cout << path[i] << " -> ";
+        cout << path[0] << "\n";
+    } else {
+        cout << "No Hamiltonian Cycle exists\n";
+    }
+
     return 0;
 }
