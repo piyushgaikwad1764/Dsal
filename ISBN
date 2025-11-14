@@ -1,0 +1,75 @@
+class BookNode:
+def __init__(self, isbn, title):
+self.isbn = isbn
+self.title = title
+self.nxt = None # next points to next node
+class Inventory:
+def __init__(self):
+self.head = None
+def add_featured_book(self, isbn, title):
+new_book = BookNode(isbn, title)
+new_book.nxt = self.head
+self.head = new_book
+def add_latest_arrival(self, isbn, title):
+new_book = BookNode(isbn, title)
+if self.head is None:
+self.head = new_book
+else:
+temp = self.head
+while temp.next:
+temp = temp.nxt
+temp.nxt = new_book
+print("Book Added")
+def del_book(self, isbn):
+current = self.head
+prev = None
+while current != None:
+if current.isbn == isbn:
+if prev:
+prev.nxt = current.nxt
+else:
+self.head = current.nxt
+print("Book Deleted")
+return
+prev = current
+current = current.nxt
+def count_books(self):
+count = 0
+temp = self.head
+while temp != None:
+count += 1
+temp = temp.nxt
+print("Total Books :", count)
+def display(self):
+if self.head == None:
+print("No Books Found")
+return
+temp = self.head
+while temp != None:
+print(f"{temp.isbn} | {temp.title}")
+temp = temp.nxt
+def main():
+inv = Inventory()
+while True:
+print("1.Add Featured Books\n2.Add Latest
+Book\n3.Delete Books\n4.Count Books\n5.Show Display")
+choice = int(input("Enter Your Choice : "))
+if choice == 1:
+isbn = input("Enter ISBN Number : ")
+title = input("Enter Title of Book : ")
+inv.add_featured_book(isbn, title)
+elif choice == 2:
+isbn = input("Enter ISBN Number : ")
+title = input("Enter Title of Book : ")
+inv.add_latest_arrival(isbn, title)
+elif choice == 3:
+isbn = input("Enter ISBN Number : ")
+inv.del_book(isbn)
+elif choice == 4:
+inv.count_books()
+elif choice == 5:
+inv.display()
+else:
+break
+if __name__ == "__main__":
+main()
