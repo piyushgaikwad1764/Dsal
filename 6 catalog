@@ -1,0 +1,139 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+class Node:
+def __init__(self, key, desc, price, category):
+self.key = key
+self.desc = desc
+self.price = price
+self.category = category
+self.left = self.right = None
+self.height = 1
+classAVL:
+definsert(self,root, key, desc, price, cat):
+ifnotroot:return Node(key, desc, price, cat)
+ifkey<root.key: root.left = self.insert(root.left, key, desc, price, cat)
+elifkey>root.key: root.right = self.insert(root.right, key, desc, price, cat)
+else: #update
+root.desc,root.price, root.category = desc, price, cat
+return root
+root.height=1+ max(self.h(root.left), self.h(root.right))
+returnself.balance(root, key)
+defdelete(self,root, key):
+ifnotroot:return root
+ifkey<root.key: root.left = self.delete(root.left, key)
+elifkey>root.key: root.right = self.delete(root.right, key)
+else:
+ifnotroot.left: return root.right
+ifnotroot.right: return root.left
+temp = self.minValueNode(root.right)
+root.key, root.desc, root.price, root.category = temp.key,
+temp.price,temp.category
+root.right = self.delete(root.right, temp.key)
+temp.desc,
+root.height = 1 + max(self.h(root.left), self.h(root.right))
+returnself.balance(root)
+defbalance(self, root, key=None):
+b=self.h(root.left) - self.h(root.right)
+ifb>1:
+ifkeyand key > root.left.key:
+root.left = self.leftRotate(root.left)
+returnself.rightRotate(root)
+if b < -1:
+ifkeyand key < root.right.key:
+root.right = self.rightRotate(root.right)
+returnself.leftRotate(root)
+returnroot
+defh(self,n): return n.height if n else 0
+defleftRotate(self, x):
+y= x.right
+x.right, y.left = y.left, x
+x.height = 1 + max(self.h(x.left), self.h(x.right))
+y.height = 1 + max(self.h(y.left), self.h(y.right))
+return y
+defrightRotate(self, y):
+x= y.left
+y.left, x.right = x.right, y
+y.height = 1 + max(self.h(y.left), self.h(y.right))
+x.height = 1 + max(self.h(x.left), self.h(x.right))
+return x
+defminValueNode(self, n):
+while n.left: n = n.left
+return n
+definorder(self, root, rev=False):
+ifnot root: return []
+left = self.inorder(root.right if rev else root.left, rev)
+right=self.inorder(root.left if rev else root.right, rev)
+returnleft+[f"{root.key}: {root.desc}, ${root.price}, [{root.category}]"] + right
+defsearch(self,root, key):
+count = 0
+while root:
+count += 1
+ifkey==root.key: return root, count
+root=root.left if key < root.key else root.right
+returnNone,count
+defdraw(self,root):
+G=nx.DiGraph()
+defadd_edges(n):
+ifnotn:return
+G.add_node(n.key)
+if n.left:
+G.add_edge(n.key, n.left.key)
+add_edges(n.left)
+if n.right:
+G.add_edge(n.key, n.right.key)
+add_edges(n.right)
+add_edges(root)
+pos=nx.spring_layout(G)
+plt.figure(figsize=(8, 5))
+nx.draw(G, pos, with
+font_size=10)
+plt.title("AVL Tree")
+plt.show()
+labels=True, node
+_
+_
+color='lightblue'
+, node
+_
+size=2000,
+
+if__name__ == "__main__":
+avl=AVL()
+root=None
+whileTrue:
+print("\n1.Add 2.Remove 3.Search 4.Update 5.Display A-Z 6.Z-A 7.Height
+8.Visualize 9.Exit")
+ch = input("Choice: ")
+if ch == '1':
+k = input("Key: ")
+d = input("Desc: ")
+p = float(input("Price: "))
+c = input("Category: ")
+root = avl.insert(root, k, d, p, c)
+elif ch == '2':
+k = input("Key to remove: ")
+root = avl.delete(root, k)
+elif ch == '3':
+k = input("Key to search: ")
+node, cmp = avl.search(root, k)
+if node: print(f"Found: {node.desc}, ${node.price}, [{node.category}] ({cmp}
+comparisons)")
+else: print(f"Not found ({cmp} comparisons)")
+elif ch == '4':
+k = input("Key to update: ")
+d = input("New Desc: ")
+p = float(input("New Price: "))
+c = input("New Category: ")
+root = avl.insert(root, k, d, p, c)
+elif ch == '5':
+print("\n".join(avl.inorder(root)))
+elifch == '6':
+print("\n".join(avl.inorder(root, rev=True)))
+elifch == '7':
+print(f"Tree height: {avl.h(root)}")
+elifch == '8':
+avl.draw(root)
+elifch == '9':
+break
+else:
+print("Invalid option.")
