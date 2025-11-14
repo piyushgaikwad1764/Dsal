@@ -1,57 +1,62 @@
 class Employee:
-def __init__(self, emp_id, name, department, salary):
-self.emp_id = emp_id
-self.name = name
-self.department = department
-self.salary = salary
-def __repr__(self):
-return f"({self.emp_id}, {self.name}, {self.department}, {self.salary})"
-# Bubble Sort by Employee ID
-def bubble_sort_by_id(employees):
-n = len(employees)
-for i in range(n-1):
-for j in range(n-i-1):
-if employees[j].emp_id > employees[j+1].emp_id:
-employees[j], employees[j+1] = employees[j+1], employees[j]
-# Insertion Sort by Name
-def insertion_sort_by_name(employees):
-for i in range(1, len(employees)):
-key = employees[i]
-j= i-1
-while j >= 0 and employees[j].name.lower() > key.name.lower():
-employees[j + 1] = employees[j]
-j-= 1
-employees[j + 1] = key
-# Dynamic input for employees
-employees = []
-n = int(input("Enter number of employees (minimum 10): "))
-if n < 10:
-print("You must enter at least 10 employees!")
-exit()
-for i in range(n):
-print(f"\nEnter details for Employee {i+1}:")
-emp_id = int(input("Employee ID: "))
-name = input("Name: ")
-department = input("Department: ")
-salary = float(input("Salary: "))
-employees.append(Employee(emp_id, name, department, salary))
-print("\nOriginal List:")
-for emp in employees:
-print(emp)
-# Sort by Employee ID (Bubble Sort)
+    def __init__(self, emp_id, name, department, salary):
+        self.emp_id = emp_id
+        self.name = name
+        self.department = department
+        self.salary = salary
+
+    def __str__(self):
+        return f"{self.emp_id:<10} {self.name:<15} {self.department:<15} rs.{self.salary}"
+
+def bubble_sort_by_id(employee_list):
+    n = len(employee_list)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if employee_list[j].emp_id > employee_list[j + 1].emp_id:
+                employee_list[j], employee_list[j + 1] = employee_list[j + 1], employee_list[j]
+
+def insertion_sort_by_name(employee_list):
+    for i in range(1, len(employee_list)):
+        key = employee_list[i]
+        j = i - 1
+        while j >= 0 and employee_list[j].name > key.name:
+            employee_list[j + 1] = employee_list[j]
+            j -= 1
+        employee_list[j + 1] = key
+
+def display_employees(employee_list, title):
+    print(f"\n{title}")
+   
+    print(f"{'Emp ID':<10} {'Name':<15} {'Department':<15} Salary")
+    
+    for emp in employee_list:
+        print(emp)
+        
+def print_complexity(algorithm_name, time_complexity, space_complexity):
+    print(f"\n{algorithm_name} Complexity:")
+    print(f"Time Complexity: {time_complexity}")
+    print(f"Space Complexity: {space_complexity}")
+
+   
+
+employees = [
+    Employee(104, "Arjun", "HR", 55000),
+    Employee(101, "Hemant", "Finance", 60000),
+    Employee(110, "Piyush", "IT", 72000),
+    Employee(108, "Devika", "IT", 68000),
+    Employee(102, "Ishita", "Marketing", 58000),
+    Employee(107, "Avani", "HR", 59000),
+    Employee(103, "Sai", "Finance", 61000),
+    Employee(109, "Tanvi", "Marketing", 57000),
+    Employee(105, "Swaraj", "Finance", 63000),
+    Employee(106, "Varun", "IT", 69000)
+]
+
 bubble_sort_by_id(employees)
-print("\nSorted by Employee ID (Bubble Sort):")
-for emp in employees:
-print(emp)
-# Sort by Name (Insertion Sort)
+display_employees(employees, "Employees Sorted by Employee ID (Bubble Sort)")
+print_complexity("Bubble Sort", "Worst/Average: O(n^2), Best: O(n)", "O(1)")
+
 insertion_sort_by_name(employees)
-print("\nSorted by Name (Insertion Sort):")
-for emp in employees:
-print(emp)
-print("\n--- Time and Space Complexity ---")
-print("Bubble Sort Time Complexity: O(n^2) in worst/average case, O(n) in
-best case")
-print("Bubble Sort Space Complexity: O(1)")
-print("Insertion Sort Time Complexity: O(n^2) in worst/average case, O(n) in
-best case (already sorted)")
-print("Space Complexity: O(1)")
+display_employees(employees, "Employees Sorted by Name (Insertion Sort)")
+print_complexity("Insertion Sort", "Worst/Average: O(n^2), Best: O(n)", "O(1)")
+
