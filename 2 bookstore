@@ -1,0 +1,83 @@
+class booknode:
+    def _init_(self,isbn,title):
+        self.isbn=isbn
+        self.title=title
+        self.next=None
+class bookinventory:
+    def _init_(self):
+        self.head=None
+    def add_featured_book(self,isbn,title):
+        new_book=booknode(isbn,title)
+        new_book.next=self.head
+        self.head=new_book
+        print(f"Featured Book '{title}' added.")
+    def add_latest_arrival(self,isbn,title):
+        new_book=booknode(isbn,title)
+        if self.head is None:
+            self.head=new_book
+        else:
+            current=self.head
+            while current.next:
+                current=current.next
+            current.next=new_book
+        print(f"Latest Arrival '{title}' added.")
+    def delete_book(self,isbn,title):
+        current=self.head
+        if current is not None and current.isbn==isbn:
+            print(f"Book {current.title} deleted.")
+            self.head=current.next
+            return
+        
+        while current is not None and current.next is not None:
+            if current.next.isbn==isbn:
+                print(f"Book '{current.next.title}'deleted.")
+                current.next=current.next.next
+                return
+            current=current.next
+            print("Book not found!")
+    def count_books(self):
+        current=self.head
+        count=0
+        while current:
+            count+=1 
+            current=current.next
+        print(f"Total number of books: '{count}'")
+    def display_books(self):
+        if self.head is None:
+            print("No books in inventory.")
+            return
+        print("\n Book Inventory")
+        current=self.head
+        while current:
+            print(f"{current.isbn}, Title:{current.title}")
+            current=current.next
+inventory=bookinventory()
+while True:
+    print("\nBook Inventory")
+    print("1.Add Featured Book")
+    print("2.Add Latest Arrival")
+    print("3.Delete Book")
+    print("4.Count Total Books")
+    print("5.Display All Books")
+    print("6.Exit")
+    choice=input("Enter your choice:")
+    if choice=="1":
+        isbn=input("Enter ISBN:")
+        title=input("Enter Title:")
+        inventory.add_featured_book(isbn,title)
+    elif choice=="2":
+        isbn=input("Enter ISBN:")
+        title=input("Enter Title:")
+        inventory.add_latest_arrival(isbn,title)
+    elif choice=="3":
+        isbn=input("Enter ISBN to Delete:")
+        inventory.delete_book(isbn,title)
+    elif choice=="4":
+        inventory.count_books()
+    elif choice=="5":
+        inventory.display_books()
+    elif choice=="6":
+        print("existing program")
+        break
+    else:
+        print("Invalid choice. Please try again.")
