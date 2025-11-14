@@ -1,0 +1,85 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <limits>
+using namespace std;
+//Node structure to store state of assignments
+struct Node {
+vector<bool> assigned; // assigned[j] is true if project j is assigned
+int developer_index; // index of current developer
+inttotal_cost; // sum of costs so far
+vector<int> assignment;// assignments so far
+//Comparator for priority queue (min-heap by cost)
+bool operator<(const Node& other) const {
+return total_cost > other.total_cost;
+}
+};
+//Function to calculate lower bound (minimum possible cost)
+intcalculateLowerBound(const vector<vector<int>>& cost,
+assigned, int developer_index) {
+int lower_bound = 0;
+int n = cost.size();
+for (int d = developer_index; d < n; ++d) {
+int min_cost = numeric_limits<int>::max();
+for (int j = 0; j < n; ++j) {
+if (!assigned[j]) {
+min_cost = min(min_cost, cost[d][j]);
+}
+}
+lower_bound += min_cost;
+const vector<bool>&
+}
+return lower_bound;
+}
+//Branch and Bound algorithm
+intassignmentBranchAndBound(const vector<vector<int>>& cost,
+result) {
+intn=cost.size();
+priority_queue<Node, vector<Node>, greater<Node>> pq;
+pq.push({vector<bool>(n, false), 0, 0, vector<int>()});
+intmin_total_cost = INT_MAX;
+while(!pq.empty()) {
+Nodenode = pq.top(); pq.pop();
+if(node.developer_index == n) {
+if(node.total_cost < min_total_cost) {
+min_total_cost = node.total_cost;
+result = node.assignment;
+}
+continue;
+vector<int>&
+}
+//Tryassigning each project to this developer
+for(intj= 0; j < n; ++j) {
+if(!node.assigned[j]) {
+Node next = node;
+next.assigned[j] = true;
+next.assignment.push_back(j);
+next.total_cost += cost[node.developer_index][j];
+intcost_so_far = next.total_cost;
+int lower_bound = calculateLowerBound(cost, next.assigned,
+node.developer_index + 1);
+if (cost_so_far + lower_bound < min_total_cost) {
+next.developer_index++;
+pq.push(next);
+}
+}
+}
+}
+return min_total_cost;
+}
+int main() {
+// Input: matrix from file or user (can be modified)
+vector<vector<int>> cost = {
+{90, 75, 75, 80},
+{35, 85, 55, 65},
+{125, 95, 90, 105},
+{45, 110, 95, 115}
+};
+int n = cost.size();
+vector<int> result;
+int min_cost = assignmentBranchAndBound(cost, result);
+cout << "Minimum Assignment Cost = " << min_cost << endl;
+for (int i = 0; i < n; ++i)
+cout << "Developer " << i << " -> Project " << result[i] << endl;
+return 0;
+}
