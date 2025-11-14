@@ -1,45 +1,70 @@
-List_Morning = []
-List_Afternoon = []
+List_Morning_Appointments = []
+List_Afternoon_Appointments = []
 
-def add():
-    aid = input("ID: ")
-    name = input("Patient: ")
-    time = input("Time (HH): ")
-    doc = input("Doctor: ")
-    appt = [aid, name, time, doc]
-    if int(time) < 12:
-        List_Morning.append(appt)
+def add_appointment():
+    appointment_id = input("Enter Appointment ID: ")
+    patient_name = input("Enter Patient Name: ")
+    appointment_time = input("Enter Appointment Time (HH:MM) and date: ")
+    doctor_name = input("Enter Doctor Name: ")
+
+    appointment = [appointment_id, patient_name, appointment_time, doctor_name]
+
+    hour = int(appointment_time.split(" ")[0].split(":")[0])
+    if hour < 12:
+        List_Morning_Appointments.append(appointment)
+        print("Added to Morning Appointments.")
     else:
-        List_Afternoon.append(appt)
+        List_Afternoon_Appointments.append(appointment)
+        print("Added to Afternoon Appointments.")
 
-def delete():
-    aid = input("ID to delete: ")
-    for lst in (List_Morning, List_Afternoon):
-        for a in lst:
-            if a[0] == aid:
-                lst.remove(a)
-                print("Deleted")
+def delete_appointment():
+    appointment_id = input("Enter Appointment ID to delete: ")
+    for lst in [List_Morning_Appointments, List_Afternoon_Appointments]:
+        for appt in lst:
+            if appt[0] == appointment_id:
+                lst.remove(appt)
+                print("Appointment deleted.")
                 return
-    print("Not found")
+    print("Appointment not found.")
 
-def search():
-    aid = input("ID to search: ")
-    for lst in (List_Morning, List_Afternoon):
-        for a in lst:
-            if a[0] == aid:
-                print(a)
+def search_appointment():
+    appointment_id = input("Enter Appointment ID to search: ")
+    for lst in [List_Morning_Appointments, List_Afternoon_Appointments]:
+        for appt in lst:
+            if appt[0] == appointment_id:
+                print("Appointment Found:", appt)
                 return
-    print("Not found")
+    print("Appointment not found.")
 
-def display():
-    print("Morning:", List_Morning)
-    print("Afternoon:", List_Afternoon)
+def display_appointments():
+    print("\nMorning Appointments")
+    for appt in List_Morning_Appointments:
+        print(appt)
 
+    print("\n Afternoon Appointments")
+    for appt in List_Afternoon_Appointments:
+        print(appt)
+        
 while True:
-    print("\n1.Add 2.Delete 3.Search 4.Display 5.Exit")
-    c = input("Choice: ")
-    if c == "1": add()
-    elif c == "2": delete()
-    elif c == "3": search()
-    elif c == "4": display()
-    elif c == "5": break
+    print("\n Clinic Appointment Manager ")
+    print("1. Add Appointment")
+    print("2. Delete Appointment")
+    print("3. Search Appointment")
+    print("4. Display All Appointments")
+    print("5. Exit")
+    
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        add_appointment()
+    elif choice == "2":
+        delete_appointment()
+    elif choice == "3":
+        search_appointment()
+    elif choice == "4":
+        display_appointments()
+    elif choice == "5":
+        print("Exiting program.")
+        break
+    else:
+        print("Invalid choice. Please try again.")
