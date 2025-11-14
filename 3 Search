@@ -1,45 +1,46 @@
-def linear_search(product_codes_list, target_product_code):
-    for index in range(len(product_codes_list)):
-        if product_codes_list[index] == target_product_code:
-            return index
+
+n = int(input("Enter number of product codes: "))
+
+product_codes = []
+print("Enter product codes:")
+for i in range(n):
+    code = input(f"Code {i+1}: ")
+    product_codes.append(code)
+
+def linear_search(lst, key):
+    for i in range(len(lst)):
+        if lst[i] == key:
+            return i
     return -1
 
-def binary_search(sorted_product_codes_list, target_product_code):
-    left_index = 0
-    right_index = len(sorted_product_codes_list) - 1
-
-    while left_index <= right_index:
-        middle_index = (left_index + right_index) // 2
-        if sorted_product_codes_list[middle_index] == target_product_code:
-            return middle_index
-        elif sorted_product_codes_list[middle_index] < target_product_code:
-            left_index = middle_index + 1
+def binary_search(lst, key):
+    low = 0
+    high = len(lst) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if lst[mid] == key:
+            return mid
+        elif key > lst[mid]:
+            low = mid + 1
         else:
-            right_index = middle_index - 1
+            high = mid - 1
     return -1
 
-product_codes = ['A103', 'B205', 'C309', 'D410', 'E512', 'F613', 'G714']
-sorted_product_codes = sorted(product_codes)
-target_code = 'D410'
+print("\nProduct List:", product_codes)
 
-print("Linear Search:")
-linear_search_index = linear_search(product_codes, target_code)
-if linear_search_index != -1:
-    print(f"Product code {target_code} found at index {linear_search_index}")
-else:
-    print(f"Product code {target_code} not found.")
-    
-print("\nTime and Space Complexity for Linear Search:")
-print("Time Complexity: Best O(1), Average and Worst O(n)")
-print("Space Complexity: O(1)")
 
-print("\nBinary Search:")
-binary_search_index = binary_search(sorted_product_codes, target_code)
-if binary_search_index != -1:
-    print(f"Product code {target_code} found at index {binary_search_index}")
-else:
-    print(f"Product code {target_code} not found.")
-    
-print("\nTime and Space Complexity for Binary Search:")
-print("Time Complexity: Best O(1), Average and Worst O(log n)")
-print("Space Complexity: O(1)")
+key = input("\nEnter product code to search: ")
+
+
+lin_index = linear_search(product_codes, key)
+print("Linear Search Result:", lin_index)
+
+
+sorted_codes = sorted(product_codes)
+bin_index = binary_search(sorted_codes, key)
+print("Binary Search Result (on sorted list):", bin_index)
+
+# Complexity
+print("\nTime & Space Complexity:")
+print("Linear Search: Time O(n), Space O(1)")
+print("Binary Search: Time O(log n), Space O(1)   (requires sorted list)")
